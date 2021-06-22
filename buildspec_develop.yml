@@ -4,7 +4,7 @@ env:
     AWS_DEFAULT_REGION: ap-northeast-1
     DEFAULT_IMAGE_REPO_NAME: murao_test
     DEFAULT_SOURCE_BRANCH: develop
-    DEFAULT_BUILD_TARGET: develop
+    DEFAULT_BUILD_TARGET: dev
     APP_NAME: laravel_helloworld
     AWS_ACCOUNT_ID: 280107060642
 
