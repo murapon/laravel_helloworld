@@ -6,6 +6,7 @@ env:
     DEFAULT_SOURCE_BRANCH: develop
     DEFAULT_BUILD_TARGET: develop
     APP_NAME: laravel_helloworld
+    AWS_ACCOUNT_ID: 280107060642
 
 phases:
   install:
