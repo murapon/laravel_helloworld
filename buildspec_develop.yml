@@ -35,16 +35,9 @@ phases:
       - pwd && ls -l
       - REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$IMAGE_REPO_NAME:$SOURCE_BRANCH
       - |
-        if [ $BUILD = "1" ]; then
-          docker-compose run --rm app composer install --no-progress --no-suggest --no-dev
-          echo '> ' docker build --target $BUILD_TARGET -t $REPOSITORY_URI -f ./docker/app/Dockerfile .
-          docker build --target $BUILD_TARGET -t $REPOSITORY_URI -f ./docker/app/Dockerfile .
-        else
-          echo "NO_BUILD for prod"
-          echo "pull image"
-          STAGING_REPOSITORY_URI=$AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/$STAGING_REPO_NAME:$SOURCE_BRANCH-$COMMIT_HASH
-          docker pull $STAGING_REPOSITORY_URI
-        fi
+        docker-compose run --rm app composer install --no-progress --no-suggest --no-dev
+        echo '> ' docker build --target $BUILD_TARGET -t $REPOSITORY_URI -f ./docker/app/Dockerfile .
+        docker build --target $BUILD_TARGET -t $REPOSITORY_URI -f ./docker/app/Dockerfile .
 
   post_build:
     commands:
@@ -52,14 +45,8 @@ phases:
       - REPOSITORY_TAGGING=$REPOSITORY_URI-$COMMIT_HASH
       - echo "- Pushing to ECR... "
       - |
-        if [ $BUILD = "1" ]; then
-          echo '> ' docker tag $REPOSITORY_URI $REPOSITORY_TAGGING
-          docker tag $REPOSITORY_URI $REPOSITORY_TAGGING
-        else
-          echo "PUSH for prod"
-          docker tag $STAGING_REPOSITORY_URI $REPOSITORY_URI
-          docker tag $STAGING_REPOSITORY_URI $REPOSITORY_TAGGING
-        fi
+        echo '> ' docker tag $REPOSITORY_URI $REPOSITORY_TAGGING
+        docker tag $REPOSITORY_URI $REPOSITORY_TAGGING
       - echo '> ' docker push $REPOSITORY_URI
       - docker push $REPOSITORY_URI
       - echo '> ' docker push $REPOSITORY_TAGGING
